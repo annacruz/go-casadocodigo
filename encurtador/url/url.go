@@ -16,9 +16,9 @@ func init() {
 }
 
 type Url struct {
-  Id string
-  Criacao time.Time
-  Destino string
+  Id string  `json:"id"`
+  Criacao time.Time `json:"criacao"`
+  Destino string `json:"destino"`
 }
 
 type Repositorio interface {
@@ -26,6 +26,13 @@ type Repositorio interface {
   BuscarPorId(id string) *Url
   BuscarPorUrl(url string) *Url
   Salvar(url Url) error
+  RegistrarClick(id string)
+  BuscarClicks(id string) int
+}
+
+type Stats struct {
+  Url *Url `json:"url"`
+  Clicks int `json:"clicks"`
 }
 
 var repo Repositorio
@@ -66,6 +73,12 @@ func Buscar(id string) *Url {
   return repo.BuscarPorId(id)
 }
 
-func main() {
+func RegistrarClick(id string){
+  repo.RegistrarClick(id)
+}
 
+func (u *Url) Stats() *Stats{
+  clicks := repo.BuscarClicks(u.Id)
+
+  return &Stats{u, clicks}
 }
